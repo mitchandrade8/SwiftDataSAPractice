@@ -11,7 +11,7 @@ import SwiftData
 struct ContentView: View {
     
     @State private var isShowingItemSheet = false
-    var expenses: [Expense] = []
+    @Query(sort: \Expense.date) var expenses: [Expense] = []
     
     var body: some View {
         NavigationStack {
@@ -67,6 +67,7 @@ struct ExpenseCell: View {
 
 struct AddExpenseSheet: View {
     
+    @Environment(\.modelContext) var context
     @Environment(\.dismiss) private var dismiss
     
     @State private var name: String = ""
@@ -90,7 +91,11 @@ struct AddExpenseSheet: View {
                 
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button("Save") {
-                        // Save code goes here
+                        let expense = Expense(name: name, date: date, value: value)
+                        context.insert(expense)
+                        
+                        try! context.save()
+                        dismiss()
                     }
                 }
             }
