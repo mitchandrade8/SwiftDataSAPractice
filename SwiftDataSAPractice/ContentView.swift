@@ -49,3 +49,51 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
+struct ExpenseCell: View {
+    
+    let expense: Expense
+    
+    var body: some View {
+        HStack {
+            Text(expense.date, format: .dateTime.month(.abbreviated).day())
+                .frame(width: 70, alignment: .leading)
+            Text(expense.name)
+            Spacer()
+            Text(expense.value, format: .currency(code: "USD"))
+        }
+    }
+}
+
+struct AddExpenseSheet: View {
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    @State private var name: String = ""
+    @State private var date: Date = .now
+    @State private var value: Double = 0
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField("Expense Name", text: $name)
+                DatePicker("Date", selection: $date, displayedComponents: .date)
+                TextField("Value", value: $value, format: .currency(code: "USD"))
+                    .keyboardType(.decimalPad)
+            }
+            .navigationTitle("New Expense")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    Button("Cancel") { dismiss() }
+                }
+                
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button("Save") {
+                        // Save code goes here
+                    }
+                }
+            }
+        }
+    }
+}
